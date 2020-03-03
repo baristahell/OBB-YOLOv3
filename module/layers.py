@@ -21,7 +21,7 @@ class conv_bn(nn.Module):
         return F.leaky_relu(self.bn(self.conv(x)), negative_slope=0.1, inplace=True)
     
     
-class DarknetBlock(nn.Module):  #   1*1  减少通道�?  3*3增加通道
+class DarknetBlock(nn.Module):  #
     def __init__(self,in_planes):
         super().__init__()
         mid_ch = in_planes // 2
