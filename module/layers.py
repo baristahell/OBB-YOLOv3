@@ -63,7 +63,7 @@ class loss_layer(nn.Module):
         self.mse_loss = nn.MSELoss()
         self.bce_loss = nn.BCELoss()
         self.ce_loss = nn.CrossEntropyLoss()
-        self.smmoth_l1_loss = nn.SmoothL1Loss()
+        self.smooth_l1_loss = nn.SmoothL1Loss()
         
         self.img_size = img_size
         
@@ -115,24 +115,24 @@ class loss_layer(nn.Module):
         loss_x = self.bce_loss(x[mask==1], tx[mask==1]) * self.lambda_xy
         loss_y = self.bce_loss(y[mask==1], ty[mask==1]) * self.lambda_xy
         
-#        loss_x1 = self.mse_loss(x1[mask==1], tx1[mask==1]) * self.lambda_coors
-#        loss_y1 = self.mse_loss(y1[mask==1], ty1[mask==1]) * self.lambda_coors 
-#        loss_x2 = self.mse_loss(x2[mask==1], tx2[mask==1]) * self.lambda_coors
-#        loss_y2 = self.mse_loss(y2[mask==1], ty2[mask==1]) * self.lambda_coors 
-#        loss_x3 = self.mse_loss(x3[mask==1], tx3[mask==1]) * self.lambda_coors
-#        loss_y3 = self.mse_loss(y3[mask==1], ty3[mask==1]) * self.lambda_coors 
-#        loss_x4 = self.mse_loss(x4[mask==1], tx4[mask==1]) * self.lambda_coors
-#        loss_y4 = self.mse_loss(y4[mask==1], ty4[mask==1]) * self.lambda_coors 
-        
-        loss_x1 = self.smmoth_l1_loss(x1[mask==1], tx1[mask==1]) * self.lambda_coors
-        loss_y1 = self.smmoth_l1_loss(y1[mask==1], ty1[mask==1]) * self.lambda_coors 
-        loss_x2 = self.smmoth_l1_loss(x2[mask==1], tx2[mask==1]) * self.lambda_coors
-        loss_y2 = self.smmoth_l1_loss(y2[mask==1], ty2[mask==1]) * self.lambda_coors 
-        loss_x3 = self.smmoth_l1_loss(x3[mask==1], tx3[mask==1]) * self.lambda_coors
-        loss_y3 = self.smmoth_l1_loss(y3[mask==1], ty3[mask==1]) * self.lambda_coors 
-        loss_x4 = self.smmoth_l1_loss(x4[mask==1], tx4[mask==1]) * self.lambda_coors
-        loss_y4 = self.smmoth_l1_loss(y4[mask==1], ty4[mask==1]) * self.lambda_coors 
-        
+        loss_x1 = self.mse_loss(x1[mask==1], tx1[mask==1]) * self.lambda_coors
+        loss_y1 = self.mse_loss(y1[mask==1], ty1[mask==1]) * self.lambda_coors
+        loss_x2 = self.mse_loss(x2[mask==1], tx2[mask==1]) * self.lambda_coors
+        loss_y2 = self.mse_loss(y2[mask==1], ty2[mask==1]) * self.lambda_coors
+        loss_x3 = self.mse_loss(x3[mask==1], tx3[mask==1]) * self.lambda_coors
+        loss_y3 = self.mse_loss(y3[mask==1], ty3[mask==1]) * self.lambda_coors
+        loss_x4 = self.mse_loss(x4[mask==1], tx4[mask==1]) * self.lambda_coors
+        loss_y4 = self.mse_loss(y4[mask==1], ty4[mask==1]) * self.lambda_coors
+        '''
+        loss_x1 = self.smooth_l1_loss(x1[mask==1], tx1[mask==1]) * self.lambda_coors
+        loss_y1 = self.smooth_l1_loss(y1[mask==1], ty1[mask==1]) * self.lambda_coors 
+        loss_x2 = self.smooth_l1_loss(x2[mask==1], tx2[mask==1]) * self.lambda_coors
+        loss_y2 = self.smooth_l1_loss(y2[mask==1], ty2[mask==1]) * self.lambda_coors 
+        loss_x3 = self.smooth_l1_loss(x3[mask==1], tx3[mask==1]) * self.lambda_coors
+        loss_y3 = self.smooth_l1_loss(y3[mask==1], ty3[mask==1]) * self.lambda_coors 
+        loss_x4 = self.smooth_l1_loss(x4[mask==1], tx4[mask==1]) * self.lambda_coors
+        loss_y4 = self.smooth_l1_loss(y4[mask==1], ty4[mask==1]) * self.lambda_coors 
+        '''
         loss_conf = self.bce_loss(conf[conf_mask_true], tconf[conf_mask_true]) +\
                     self.bce_loss(conf[conf_mask_false], tconf[conf_mask_false])
         #loss_cls = self.bce_loss(pred_cls[mask==1],tcls[mask==1]) * self.lambda_cls
