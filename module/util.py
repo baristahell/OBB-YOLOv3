@@ -135,8 +135,12 @@ def get_target( target, anchors, g_dim, ignore_threshold, num_classes):
             
             gw = max(target[b,t,[0,2,4,6]] * g_dim) - min(target[b,t,[0,2,4,6]] * g_dim)
             gh = max(target[b,t,[1,3,5,7]] * g_dim) - min(target[b,t,[1,3,5,7]] * g_dim)
+
+            print(gw)
+            print(gh)
+
             # Get shape of gt box
-            gt_box = torch.FloatTensor(np.array([0, 0, gw, gh]).astype('float64')).unsqueeze(0)
+            gt_box = torch.FloatTensor(np.array([0, 0, gw, gh])).unsqueeze(0)
             # Get shape of anchor box
             anchor_shapes = torch.FloatTensor(np.concatenate((np.zeros((nA, 2)),
                                                                   np.array(anchors)), 1))
