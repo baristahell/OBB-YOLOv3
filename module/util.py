@@ -6,11 +6,11 @@ def predict_transform(fms, inp_dim, anchors, num_classes, cuda=False):
     '''
         ?x255x13x13,26x26,52x52    3*(11+80)=255
     '''
-    stride =  inp_dim // fms.size(2)  #416// 13,26,52 = 32, 6, 8
+    stride = inp_dim // fms.size(2)  #416// 13,26,52 = 32, 6, 8
     batch_size = fms.size(0)
     bbox_attrs = 11 + num_classes                ##5+80 = 85
     grid_size = inp_dim // stride               ###   13,26,52
-    #[(3.625, 2.8125), (4.875, 6.1875), (11.65625, 10.1875)]
+
     anchors = [(a[0]/stride, a[1]/stride) for a in anchors]
     num_anchors = len(anchors)                   # 3   1
     # [?,255,169]///676,2704
@@ -136,7 +136,7 @@ def get_target( target, anchors, g_dim, ignore_threshold, num_classes):
             gw = max(target[b,t,[0,2,4,6]] * g_dim) - min(target[b,t,[0,2,4,6]] * g_dim)
             gh = max(target[b,t,[1,3,5,7]] * g_dim) - min(target[b,t,[1,3,5,7]] * g_dim)
             # Get shape of gt box
-            gt_box = torch.FloatTensor(np.array([0, 0, gw, gh])).unsqueeze(0)
+            gt_box = torch.FloatTensor(np.array([0, 0, gw, gh]).astype('float64')).unsqueeze(0)
             # Get shape of anchor box
             anchor_shapes = torch.FloatTensor(np.concatenate((np.zeros((nA, 2)),
                                                                   np.array(anchors)), 1))
