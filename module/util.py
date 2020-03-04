@@ -133,8 +133,10 @@ def get_target( target, anchors, g_dim, ignore_threshold, num_classes):
             gi = int(gx)
             gj = int(gy)
 
-            print(mask.shape)
-            print(target.shape)
+            print(str(mask.shape))
+            print(str(target.shape))
+            print(gx)
+            print(gy)
             print(gi)
             print(gj)
             print(target)
