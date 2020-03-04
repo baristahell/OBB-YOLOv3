@@ -95,6 +95,7 @@ class yolo(nn.Module):
             detections = self.detection(out1,out2,out3)
             return detections
         else:
+            print(target)
             loss_0 = self.loss0(out1,target)
             loss_1 = self.loss1(out2,target)
             loss_2 = self.loss2(out3,target)
