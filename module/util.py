@@ -134,15 +134,6 @@ def get_target( target, anchors, g_dim, ignore_threshold, num_classes):
             gi = int(gx)
             gj = int(gy)
 
-            print(str(mask.shape))
-            print(str(target.shape))
-            print(gx)
-            print(gy)
-            print(gi)
-            print(gj)
-            print(target)
-            print(max(target[b,t,[0,2,4,6]] * g_dim))
-
             gw = max(target[b,t,[0,2,4,6]] * g_dim) - min(target[b,t,[0,2,4,6]] * g_dim)
             gh = max(target[b,t,[1,3,5,7]] * g_dim) - min(target[b,t,[1,3,5,7]] * g_dim)
 

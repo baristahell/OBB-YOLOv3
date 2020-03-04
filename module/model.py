@@ -6,6 +6,7 @@ import torch.nn.init as init
 import torch.nn.functional as F
 from .layers import conv_bn,DarknetBlock,detect_layer, loss_layer
 
+
 # kaiming_weights_init
 def weights_init(m):
     for key in m.state_dict():
@@ -16,7 +17,8 @@ def weights_init(m):
                 m.state_dict()[key][...] = 1
         elif key.split('.')[-1] == 'bias':
             m.state_dict()[key][...] = 0
-            
+
+
 class Darknet53(nn.Module):
     def __init__(self, num_blocks):
         super(Darknet53,self).__init__()
@@ -66,7 +68,7 @@ class yolo(nn.Module):
 
     def forward(self,x, target=None):
         c3, c4, c5 = self.extractor(x)
-        print(target)
+
         x = c5                   #1,1024,13,13
         for i in range(5):
             x = self.predict_conv_list1[i](x)   #1,512,13,13
@@ -93,15 +95,15 @@ class yolo(nn.Module):
         out3 = x                                                  #1,255,52,52
         
         if target is None:
-            detections = self.detection(out1,out2,out3)
+            detections = self.detection(out1, out2, out3)
             return detections
         else:
-            loss_0 = self.loss0(out1,target)
-            loss_1 = self.loss1(out2,target)
-            loss_2 = self.loss2(out3,target)
+            loss_0 = self.loss0(out1, target)
+            loss_1 = self.loss1(out2, target)
+            loss_2 = self.loss2(out3, target)
             
             ret = []
-            for i in zip(loss_0,loss_1,loss_2):
+            for i in zip(loss_0, loss_1, loss_2):
                 ret.append(sum(i))
             return ret
     
@@ -119,7 +121,8 @@ class yolo(nn.Module):
             print('Finished!')
         else:
             print('Sorry only .pth and .pkl files supported.')
-    
+
+
 def predict_conv_list1(num_classes):
     layers = []
     layers += [conv_bn(1024, 512, kernel=1, stride=1, padding=0)]
@@ -130,6 +133,7 @@ def predict_conv_list1(num_classes):
     layers += [conv_bn(512, 1024, kernel=3, stride=1, padding=1)]
     layers += [nn.Conv2d(1024, (11 + num_classes) * 3, kernel_size=1, stride=1, padding=0)]
     return layers
+
 
 def predict_conv_list2(num_classes):
     layers = list()
@@ -142,6 +146,7 @@ def predict_conv_list2(num_classes):
     layers += [nn.Conv2d(512, (11 + num_classes) * 3, kernel_size=1, stride=1, padding=0)]
     return layers
 
+
 def predict_conv_list3(num_classes):
     layers = list()
     layers += [conv_bn(384, 128, kernel=1, stride=1, padding=0)]
@@ -153,9 +158,11 @@ def predict_conv_list3(num_classes):
     layers += [nn.Conv2d(256, (11 + num_classes) * 3, kernel_size=1, stride=1, padding=0)]
     return layers
 
+
 def yolov3(input_dim, anchors, num_classes,cuda=True):
     num_blocks = [1,2,8,8,4]
     return yolo(num_blocks, anchors, input_dim, num_classes, cuda)
+
 
 if __name__=="__main__":
     
