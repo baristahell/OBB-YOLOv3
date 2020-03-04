@@ -141,8 +141,8 @@ def get_target( target, anchors, g_dim, ignore_threshold, num_classes):
             #gt_box = torch.FloatTensor(np.array([0, 0, gw, gh])).unsqueeze(0)
 
             # Fix issues
-            gw = gw.cpu().numpy()
-            gh = gh.cpu().numpy()
+            gw = int(gw)  # gw = gw.cpu().numpy()
+            gh = int(gh)  # gh.cpu().numpy()
             gt_box = torch.FloatTensor(np.array([0, 0, gw, gh])).unsqueeze(0).cuda()
 
             # Get shape of anchor box
