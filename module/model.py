@@ -46,7 +46,7 @@ class Darknet53(nn.Module):
     
 
 class yolo(nn.Module):
-    def __init__(self,num_blocks, anchors, input_dim, num_classes,use_cuda=False):
+    def __init__(self,num_blocks, anchors, input_dim, num_classes, use_cuda=False):
         super(yolo,self).__init__()
         self.extractor = Darknet53(num_blocks)
         self.predict_conv_list1 = nn.ModuleList(predict_conv_list1(num_classes))
@@ -60,13 +60,13 @@ class yolo(nn.Module):
         self.loss1 = loss_layer(anchors[1], input_dim, num_classes)
         self.loss2 = loss_layer(anchors[2], input_dim, num_classes)
         
-    def _make_layer(self,in_planes,num_block,stride=1):
-        layers = [conv_bn(in_planes,2*in_planes,kernel=3,stride=stride,padding=1)]
+    def _make_layer(self, in_planes, num_block, stride=1):
+        layers = [conv_bn(in_planes, 2*in_planes, kernel=3, stride=stride, padding=1)]
         for i in range(num_block):
             layers.append(DarknetBlock(2*in_planes))
         return nn.Sequential(*layers)
 
-    def forward(self,x, target=None):
+    def forward(self, x, target=None):
         c3, c4, c5 = self.extractor(x)
 
         x = c5                   #1,1024,13,13
@@ -159,7 +159,7 @@ def predict_conv_list3(num_classes):
     return layers
 
 
-def yolov3(input_dim, anchors, num_classes,cuda=True):
+def yolov3(input_dim, anchors, num_classes, cuda=True):
     num_blocks = [1,2,8,8,4]
     return yolo(num_blocks, anchors, input_dim, num_classes, cuda)
 

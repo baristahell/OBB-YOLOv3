@@ -83,6 +83,7 @@ def bbox_iou(box1, box2, x1y1x2y2=True):
     iou = inter_area / (b1_area + b2_area - inter_area + 1e-16)
     return iou
 
+
 def get_target( target, anchors, g_dim, ignore_threshold, num_classes):
     '''
         target:   ?, 50,11
@@ -116,7 +117,6 @@ def get_target( target, anchors, g_dim, ignore_threshold, num_classes):
     
     for b in range(bs):
         for t in range(target.shape[1]):
-            print(target[b, t, :])
             if target[b, t].sum() == 0:
                 break
             # Convert to position relative to box
@@ -134,11 +134,17 @@ def get_target( target, anchors, g_dim, ignore_threshold, num_classes):
             gi = int(gx)
             gj = int(gy)
 
-            gw = max(target[b,t,[0,2,4,6]] * g_dim) - min(target[b,t,[0,2,4,6]] * g_dim)
-            gh = max(target[b,t,[1,3,5,7]] * g_dim) - min(target[b,t,[1,3,5,7]] * g_dim)
+            gw = max(target[b, t, [0, 2, 4, 6]] * g_dim) - min(target[b, t, [0, 2, 4, 6]] * g_dim)
+            gh = max(target[b, t, [1, 3, 5, 7]] * g_dim) - min(target[b, t, [1, 3, 5, 7]] * g_dim)
 
             # Get shape of gt box
-            gt_box = torch.FloatTensor(np.array([0, 0, gw, gh])).unsqueeze(0)
+            #gt_box = torch.FloatTensor(np.array([0, 0, gw, gh])).unsqueeze(0)
+
+            # Fix issues
+            gw = gw.cpu().numpy()
+            gh = gh.cpu().numpy()
+            gt_box = torch.FloatTensor(np.array([0, 0, gw, gh])).unsqueeze(0).cuda()
+
             # Get shape of anchor box
             anchor_shapes = torch.FloatTensor(np.concatenate((np.zeros((nA, 2)),
                                                                   np.array(anchors)), 1))
