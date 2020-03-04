@@ -116,6 +116,7 @@ def get_target( target, anchors, g_dim, ignore_threshold, num_classes):
     
     for b in range(bs):
         for t in range(target.shape[1]):
+            print(target[b, t, :])
             if target[b, t].sum() == 0:
                 break
             # Convert to position relative to box
