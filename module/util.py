@@ -134,8 +134,14 @@ def get_target( target, anchors, g_dim, ignore_threshold, num_classes):
             gi = int(gx)
             gj = int(gy)
 
-            gw = max(target[b, t, [0, 2, 4, 6]] * g_dim) - min(target[b, t, [0, 2, 4, 6]] * g_dim)
-            gh = max(target[b, t, [1, 3, 5, 7]] * g_dim) - min(target[b, t, [1, 3, 5, 7]] * g_dim)
+            try:
+                gw = max(target[b, t, [0, 2, 4, 6]] * g_dim) - min(target[b, t, [0, 2, 4, 6]] * g_dim)
+                gh = max(target[b, t, [1, 3, 5, 7]] * g_dim) - min(target[b, t, [1, 3, 5, 7]] * g_dim)
+            except Exception as e:
+                gwt = target[b,t,[0,2,4,6]]*g_dim
+                gw = max(gwt)-min(gwt)
+                ght = target[b, t, [0, 2, 4, 6]] * g_dim
+                gh = max(ght)-min(ght)
 
             # Get shape of gt box
             #gt_box = torch.FloatTensor(np.array([0, 0, gw, gh])).unsqueeze(0)
@@ -143,10 +149,11 @@ def get_target( target, anchors, g_dim, ignore_threshold, num_classes):
             # Fix issues
             gw = int(gw)  # gw = gw.cpu().numpy()
             gh = int(gh)  # gh.cpu().numpy()
-            gt_array = np.array([0, 0, gw, gh])
+
             try:
-                gt_box = torch.FloatTensor(gt_array).unsqueeze(0).cuda()
+                gt_box = torch.FloatTensor(np.array([0, 0, gw, gh])).unsqueeze(0)
             except Exception as e:
+                gt_array = np.array([0, 0, gw, gh])
                 gt_box = torch.from_numpy(gt_array)
                 gt_box = gt_box.unsqueeze(0)
                 gt_box = gt_box.float()
