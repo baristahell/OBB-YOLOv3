@@ -63,9 +63,10 @@ class yolo(nn.Module):
         for i in range(num_block):
             layers.append(DarknetBlock(2*in_planes))
         return nn.Sequential(*layers)
+
     def forward(self,x, target=None):
         c3, c4, c5 = self.extractor(x)
-        
+        print(target)
         x = c5                   #1,1024,13,13
         for i in range(5):
             x = self.predict_conv_list1[i](x)   #1,512,13,13
@@ -95,7 +96,6 @@ class yolo(nn.Module):
             detections = self.detection(out1,out2,out3)
             return detections
         else:
-            print(target)
             loss_0 = self.loss0(out1,target)
             loss_1 = self.loss1(out2,target)
             loss_2 = self.loss2(out3,target)
