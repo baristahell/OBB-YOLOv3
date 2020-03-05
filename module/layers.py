@@ -100,8 +100,8 @@ class loss_layer(nn.Module):
       
         # build target
         mask, conf_mask, tx, ty, tx1, ty1, tx2, ty2, tx3, ty3, tx4, ty4, tconf, tcls = get_target(targets, scaled_anchors, fm_size, self.ignore_threshold, self.num_classes)
-        #mask, conf_mask = mask.byte().cuda(), conf_mask.byte().cuda()
-        mask, conf_mask = mask.bool().cuda(), conf_mask.bool().cuda()
+        mask, conf_mask = mask.byte().cuda(), conf_mask.byte().cuda()
+        # mask, conf_mask = mask.bool().cuda(), conf_mask.bool().cuda()
         tx, ty = tx.cuda(), ty.cuda()
         tx1, ty1, tx2, ty2, tx3, ty3, tx4, ty4 = tx1.cuda(), ty1.cuda(), tx2.cuda(), ty2.cuda(), tx3.cuda(), ty3.cuda(), tx4.cuda(), ty4.cuda()
         tconf, tcls = tconf.cuda(), tcls.long().cuda()
@@ -110,7 +110,7 @@ class loss_layer(nn.Module):
         conf_mask_false = conf_mask - mask
                                   
         #  losses.
-        indexer=True
+        indexer=1
 
         loss_x = self.bce_loss(x[mask==indexer], tx[mask==indexer]) * self.lambda_xy
         loss_y = self.bce_loss(y[mask==indexer], ty[mask==indexer]) * self.lambda_xy
