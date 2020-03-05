@@ -110,17 +110,19 @@ class loss_layer(nn.Module):
         conf_mask_false = conf_mask - mask
                                   
         #  losses.
-        loss_x = self.bce_loss(x[mask==1], tx[mask==1]) * self.lambda_xy
-        loss_y = self.bce_loss(y[mask==1], ty[mask==1]) * self.lambda_xy
+        indexer=True
+
+        loss_x = self.bce_loss(x[mask==indexer], tx[mask==indexer]) * self.lambda_xy
+        loss_y = self.bce_loss(y[mask==indexer], ty[mask==indexer]) * self.lambda_xy
         
-        loss_x1 = self.mse_loss(x1[mask==1], tx1[mask==1]) * self.lambda_coors
-        loss_y1 = self.mse_loss(y1[mask==1], ty1[mask==1]) * self.lambda_coors
-        loss_x2 = self.mse_loss(x2[mask==1], tx2[mask==1]) * self.lambda_coors
-        loss_y2 = self.mse_loss(y2[mask==1], ty2[mask==1]) * self.lambda_coors
-        loss_x3 = self.mse_loss(x3[mask==1], tx3[mask==1]) * self.lambda_coors
-        loss_y3 = self.mse_loss(y3[mask==1], ty3[mask==1]) * self.lambda_coors
-        loss_x4 = self.mse_loss(x4[mask==1], tx4[mask==1]) * self.lambda_coors
-        loss_y4 = self.mse_loss(y4[mask==1], ty4[mask==1]) * self.lambda_coors
+        loss_x1 = self.mse_loss(x1[mask==indexer], tx1[mask==indexer]) * self.lambda_coors
+        loss_y1 = self.mse_loss(y1[mask==indexer], ty1[mask==indexer]) * self.lambda_coors
+        loss_x2 = self.mse_loss(x2[mask==indexer], tx2[mask==indexer]) * self.lambda_coors
+        loss_y2 = self.mse_loss(y2[mask==indexer], ty2[mask==indexer]) * self.lambda_coors
+        loss_x3 = self.mse_loss(x3[mask==indexer], tx3[mask==indexer]) * self.lambda_coors
+        loss_y3 = self.mse_loss(y3[mask==indexer], ty3[mask==indexer]) * self.lambda_coors
+        loss_x4 = self.mse_loss(x4[mask==indexer], tx4[mask==indexer]) * self.lambda_coors
+        loss_y4 = self.mse_loss(y4[mask==indexer], ty4[mask==indexer]) * self.lambda_coors
         '''
         loss_x1 = self.smooth_l1_loss(x1[mask==1], tx1[mask==1]) * self.lambda_coors
         loss_y1 = self.smooth_l1_loss(y1[mask==1], ty1[mask==1]) * self.lambda_coors 
