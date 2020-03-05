@@ -170,8 +170,9 @@ def get_target( target, anchors, g_dim, ignore_threshold, num_classes):
             best_n = np.argmax(anch_ious)
             # Masks
     
-            mask[b, best_n, gj, gi] = 1
-            conf_mask[b, best_n, gj, gi] = 1
+            mask[b, best_n, gj, gi] = True
+            conf_mask[b, best_n, gj, gi] = True
+
             # Coordinates
             tx[b, best_n, gj, gi] = gx - gi
             ty[b, best_n, gj, gi] = gy - gj
