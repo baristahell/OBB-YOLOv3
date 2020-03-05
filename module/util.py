@@ -198,7 +198,6 @@ def get_target( target, anchors, g_dim, ignore_threshold, num_classes):
             # object
             tconf[b, best_n, gj, gi] = True
             # One-hot encoding of label
-            # tcls[b, best_n, gj, gi, int(target[b, t, 10])] = 1
             tcls[b, best_n, gj, gi] = int(target[b, t, 10])
             
     return mask, conf_mask, tx, ty, tx1, ty1, tx2, ty2,tx3, ty3,tx4, ty4, tconf, tcls
