@@ -3,50 +3,50 @@ import torch
 import numpy as np
 
 def predict_transform(fms, inp_dim, anchors, num_classes, cuda=False):
-    '''
+    """
         ?x255x13x13,26x26,52x52    3*(11+80)=255
-    '''
-    stride = inp_dim // fms.size(2)  #416// 13,26,52 = 32, 6, 8
+    """
+    stride = inp_dim // fms.size(2)  # 416// 13,26,52 = 32, 6, 8
     batch_size = fms.size(0)
-    bbox_attrs = 11 + num_classes                ##5+80 = 85
-    grid_size = inp_dim // stride               ###   13,26,52
+    bbox_attrs = 11 + num_classes    # 5+80 = 85
+    grid_size = inp_dim // stride    # 13,26,52
 
     anchors = [(a[0]/stride, a[1]/stride) for a in anchors]
     num_anchors = len(anchors)                   # 3   1
     # [?,255,169]///676,2704
     prediction = fms.view(batch_size, bbox_attrs*num_anchors,-1)
-    ##[?,169,255]
+    # [?,169,255]
     prediction = prediction.transpose(1,2).contiguous()
     
-    #[?,169*3,85]
-    prediction = prediction.view(batch_size, -1, bbox_attrs)   #?, 507,31
+    # [?,169*3,85]
+    prediction = prediction.view(batch_size, -1, bbox_attrs)   # ?, 507,31
     
-    #Sigmoid the  centre_X, centre_Y. and object confidencce  ##0-7  10 conf
-    prediction[:,:,8] = torch.sigmoid(prediction[:,:,8])  #?,507
+    # Sigmoid the  centre_X, centre_Y. and object confidence  ##0-7  10 conf
+    prediction[:,:,8] = torch.sigmoid(prediction[:,:,8])  # ?,507
     prediction[:,:,9] = torch.sigmoid(prediction[:,:,9])
     prediction[:,:,10] = torch.sigmoid(prediction[:,:,10])
     
-    #Add the center offsets
+    # Add the center offsets
     grid_len = np.arange(grid_size)
-    a, b = np.meshgrid(grid_len,grid_len)  ##16*16,  16*16
+    a, b = np.meshgrid(grid_len,grid_len)  # 16*16,  16*16
     
-    x_offset = torch.FloatTensor(a).view(-1,1) #0,1,2,3,...15..0,1,2
-    y_offset = torch.FloatTensor(b).view(-1,1) #0,0,0,0,0,0,...1,1,1,1...15,15,15
-    #[1,507,2]  ---> 2028, 8112
-    x_y_offset = torch.cat((x_offset, y_offset), 1).repeat(1,num_anchors).view(-1,2).unsqueeze(0)  #1,768,2
+    x_offset = torch.FloatTensor(a).view(-1,1)  # 0,1,2,3,...15..0,1,2
+    y_offset = torch.FloatTensor(b).view(-1,1)  # 0,0,0,0,0,0,...1,1,1,1...15,15,15
+    # [1,507,2]  ---> 2028, 8112
+    x_y_offset = torch.cat((x_offset, y_offset), 1).repeat(1,num_anchors).view(-1,2).unsqueeze(0)  # 1,768,2
    
-    #log space transform height and the width
-    anchors = torch.FloatTensor(anchors).repeat(1,4)#[1.25,1.625],[2,3.75],[4.125,2.875]
-    anchors = anchors.repeat(grid_size*grid_size,1).unsqueeze(0)##[507,2]->[1,507,2]
+    # log space transform height and the width
+    anchors = torch.FloatTensor(anchors).repeat(1,4)  # [1.25,1.625],[2,3.75],[4.125,2.875]
+    anchors = anchors.repeat(grid_size*grid_size,1).unsqueeze(0)  # [507,2]->[1,507,2]
     
     if cuda:
         x_y_offset = x_y_offset.cuda()
         anchors = anchors.cuda()
     
     prediction[...,8:10] += x_y_offset  
-    #prediction[...,0:8] = torch.exp(prediction[:,:,0:8])*anchors
+
     prediction[...,0:8] = prediction[:,:,0:8] * anchors + x_y_offset.repeat(1,1,4)
-    #Softmax the class scores
+    # Softmax the class scores
     prediction[...,11: 11 + num_classes] = torch.sigmoid((prediction[:,:, 11 : 11 + num_classes]))
     prediction[...,:10] *= stride 
     
@@ -69,13 +69,12 @@ def bbox_iou(box1, box2, x1y1x2y2=True):
         b2_x1, b2_y1, b2_x2, b2_y2 = box2[:,0], box2[:,1], box2[:,2], box2[:,3]
 
     # get the coordinates of the intersection rectangle
-    inter_rect_x1 =  torch.max(b1_x1, b2_x1)
-    inter_rect_y1 =  torch.max(b1_y1, b2_y1)
-    inter_rect_x2 =  torch.min(b1_x2, b2_x2)
-    inter_rect_y2 =  torch.min(b1_y2, b2_y2)
+    inter_rect_x1 = torch.max(b1_x1, b2_x1)
+    inter_rect_y1 = torch.max(b1_y1, b2_y1)
+    inter_rect_x2 = torch.min(b1_x2, b2_x2)
+    inter_rect_y2 = torch.min(b1_y2, b2_y2)
     # Intersection area
-    inter_area =    torch.clamp(inter_rect_x2 - inter_rect_x1 + 1, min=0) * \
-                    torch.clamp(inter_rect_y2 - inter_rect_y1 + 1, min=0)
+    inter_area = torch.clamp(inter_rect_x2 - inter_rect_x1 + 1, min=0) * torch.clamp(inter_rect_y2 - inter_rect_y1 + 1, min=0)
     # Union Area
     b1_area = (b1_x2 - b1_x1 + 1) * (b1_y2 - b1_y1 + 1)
     b2_area = (b2_x2 - b2_x1 + 1) * (b2_y2 - b2_y1 + 1)
@@ -98,8 +97,8 @@ def get_target( target, anchors, g_dim, ignore_threshold, num_classes):
     nA = len(anchors)
     num_classes = num_classes
     
-    mask = torch.zeros(bs, nA, g_dim, g_dim)
-    conf_mask = torch.ones(bs, nA, g_dim, g_dim)
+    mask = torch.zeros(bs, nA, g_dim, g_dim, dtype=torch.bool)
+    conf_mask = torch.ones(bs, nA, g_dim, g_dim, dtype=torch.bool)
     
     tx = torch.zeros(bs, nA, g_dim, g_dim)
     ty = torch.zeros(bs, nA, g_dim, g_dim)
@@ -147,7 +146,7 @@ def get_target( target, anchors, g_dim, ignore_threshold, num_classes):
             #gt_box = torch.FloatTensor(np.array([0, 0, gw, gh])).unsqueeze(0)
 
             # Fix issues
-            gw = gw = gw.cpu().numpy()
+            gw = gw.cpu().numpy()
             gh = gh.cpu().numpy()
 
             #try:

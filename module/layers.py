@@ -136,7 +136,7 @@ class loss_layer(nn.Module):
         
         loss_cls = self.ce_loss(pred_cls[mask==1],tcls[mask==1]) * self.lambda_cls
         
-        loss = loss_x  + loss_y  + loss_x1  + loss_y1 + loss_x2 + loss_y2 + loss_x3 + loss_y3 + loss_x4 + loss_y4 + loss_conf  + loss_cls 
+        loss = loss_x  + loss_y  + loss_x1  + loss_y1 + loss_x2 + loss_y2 + loss_x3 + loss_y3 + loss_x4 + loss_y4 + loss_conf + loss_cls
 
         return tuple((loss, loss_x.item(), loss_y.item(), loss_x1.item(),\
                 loss_y1.item(), loss_x2.item(),loss_y2.item(),loss_x3.item(),loss_y3.item(),loss_x4.item(), loss_y4.item(), loss_conf.item(), loss_cls.item() ))
