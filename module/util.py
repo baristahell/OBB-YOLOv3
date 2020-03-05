@@ -97,8 +97,8 @@ def get_target( target, anchors, g_dim, ignore_threshold, num_classes):
     nA = len(anchors)
     num_classes = num_classes
     
-    mask = torch.zeros(bs, nA, g_dim, g_dim, dtype=torch.bool)
-    conf_mask = torch.ones(bs, nA, g_dim, g_dim, dtype=torch.bool)
+    mask = torch.zeros(bs, nA, g_dim, g_dim)
+    conf_mask = torch.ones(bs, nA, g_dim, g_dim)
     
     tx = torch.zeros(bs, nA, g_dim, g_dim)
     ty = torch.zeros(bs, nA, g_dim, g_dim)
