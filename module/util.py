@@ -159,12 +159,11 @@ def get_target( target, anchors, g_dim, ignore_threshold, num_classes):
             #    gt_box = gt_box.cuda()
 
             # Get shape of anchor box
-            anchor_shapes = torch.FloatTensor(np.concatenate((np.zeros((nA, 2)),
-                                                                  np.array(anchors)), 1))
+            anchor_shapes = torch.FloatTensor(np.concatenate((np.zeros((nA, 2)), np.array(anchors)), 1))
             # Calculate iou between gt and anchor shapes
             anch_ious = bbox_iou(gt_box, anchor_shapes)
             # Where the overlap is larger than threshold set mask to zero (ignore)
-            conf_mask[b, anch_ious > ignore_threshold, gj, gi] = 0
+            conf_mask[b, anch_ious > ignore_threshold, gj, gi] = False  # 0
 
             # Find the best matching anchor box
             best_n = np.argmax(anch_ious)
@@ -199,7 +198,7 @@ def get_target( target, anchors, g_dim, ignore_threshold, num_classes):
             # object
             tconf[b, best_n, gj, gi] = True
             # One-hot encoding of label
-            #tcls[b, best_n, gj, gi, int(target[b, t, 10])] = 1
+            # tcls[b, best_n, gj, gi, int(target[b, t, 10])] = 1
             tcls[b, best_n, gj, gi] = int(target[b, t, 10])
             
     return mask, conf_mask, tx, ty, tx1, ty1, tx2, ty2,tx3, ty3,tx4, ty4, tconf, tcls
