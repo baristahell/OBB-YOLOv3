@@ -163,14 +163,14 @@ def get_target( target, anchors, g_dim, ignore_threshold, num_classes):
             # Calculate iou between gt and anchor shapes
             anch_ious = bbox_iou(gt_box, anchor_shapes)
             # Where the overlap is larger than threshold set mask to zero (ignore)
-            conf_mask[b, anch_ious > ignore_threshold, gj, gi] = False  # 0
+            conf_mask[b, anch_ious > ignore_threshold, gj, gi] = 0
 
             # Find the best matching anchor box
             best_n = np.argmax(anch_ious)
             # Masks
     
-            mask[b, best_n, gj, gi] = True
-            conf_mask[b, best_n, gj, gi] = True
+            mask[b, best_n, gj, gi] = 1
+            conf_mask[b, best_n, gj, gi] = 1
 
             # Coordinates
             tx[b, best_n, gj, gi] = gx - gi
@@ -196,7 +196,7 @@ def get_target( target, anchors, g_dim, ignore_threshold, num_classes):
 #            ty4[b, best_n, gj, gi] = (gy4 - gj) / anchors[best_n][1]
             
             # object
-            tconf[b, best_n, gj, gi] = True
+            tconf[b, best_n, gj, gi] = 1
             # One-hot encoding of label
             tcls[b, best_n, gj, gi] = int(target[b, t, 10])
             
