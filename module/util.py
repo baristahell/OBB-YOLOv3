@@ -197,7 +197,7 @@ def get_target( target, anchors, g_dim, ignore_threshold, num_classes):
 #            ty4[b, best_n, gj, gi] = (gy4 - gj) / anchors[best_n][1]
             
             # object
-            tconf[b, best_n, gj, gi] = 1
+            tconf[b, best_n, gj, gi] = True
             # One-hot encoding of label
             #tcls[b, best_n, gj, gi, int(target[b, t, 10])] = 1
             tcls[b, best_n, gj, gi] = int(target[b, t, 10])
