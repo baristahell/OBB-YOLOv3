@@ -159,7 +159,7 @@ def get_target( target, anchors, g_dim, ignore_threshold, num_classes):
             #    gt_box = gt_box.cuda()
 
             # Get shape of anchor box
-            anchor_shapes = torch.FloatTensor(np.concatenate((np.zeros((nA, 2)), np.array(anchors)), 1), dtype=torch.bool)
+            anchor_shapes = torch.FloatTensor(np.concatenate((np.zeros((nA, 2)), np.array(anchors)), 1))
             # Calculate iou between gt and anchor shapes
             anch_ious = bbox_iou(gt_box, anchor_shapes)
             # Where the overlap is larger than threshold set mask to zero (ignore)
