@@ -137,7 +137,7 @@ class loss_layer(nn.Module):
                     self.bce_loss(conf[conf_mask_false], tconf[conf_mask_false])
         #loss_cls = self.bce_loss(pred_cls[mask==1],tcls[mask==1]) * self.lambda_cls
         
-        loss_cls = self.ce_loss(pred_cls[mask==1],tcls[mask==1]) * self.lambda_cls
+        loss_cls = self.ce_loss(pred_cls[mask==indexer],tcls[mask==indexer]) * self.lambda_cls
         
         loss = loss_x  + loss_y  + loss_x1  + loss_y1 + loss_x2 + loss_y2 + loss_x3 + loss_y3 + loss_x4 + loss_y4 + loss_conf + loss_cls
 
